@@ -3,7 +3,7 @@ var Visualizer = function() {
     this.file = null, //the current file
     this.fileName = null, //the current file name
     this.audioContext = null,
-    this.source = null, //the audio source
+    this.source = "https://iplock.weebly.com/uploads/9/5/7/3/95731436/marshmello_-_alone.mp3", //the audio source
     this.info = document.getElementById('info').innerHTML, //this used to upgrade the UI information
     this.infoUpdateId = null, //to sotore the setTimeout ID and clear the interval
     this.animationId = null,
@@ -16,7 +16,7 @@ var Visualizer = function() {
 Visualizer.prototype = {
     ini: function() {
         this._prepareAPI();
-        this._addEventListner();
+        this.visualize(this.source, Buffer);
     },
     _prepareAPI: function() {
         //fix browser vender for AudioContext and requestAnimationFrame
@@ -29,86 +29,6 @@ Visualizer.prototype = {
             this._updateInfo('!Your browser does not support AudioContext', false);
             console.log(e);
         }
-    },
-    _addEventListner: function() {
-        var that = this,
-            audioInput = document.getElementById('uploadedFile'),
-            dropContainer = document.getElementsByTagName("canvas")[0];
-        //listen the file upload
-        audioInput.onchange = function() {
-            //the if statement fixes the file selction cance,l because the onchange will trigger even the file selection been canceled
-            if (audioInput.files.length !== 0) {
-                //only process the first file
-                that.file = audioInput.files[0];
-                that.fileName = that.file.name;
-                if (that.status === 1) {
-                    //the sound is still playing but we upload another file, so set the forceStop flag to true
-                    that.forceStop = true;
-                };
-                document.getElementById('fileWrapper').style.opacity = 1;
-                that._updateInfo('Uploading', true);
-                //once the file is ready,start the visualizer
-                that._start();
-            };
-        };
-        //listen the drag & drop
-        dropContainer.addEventListener("dragenter", function() {
-            document.getElementById('fileWrapper').style.opacity = 1;
-            that._updateInfo('Drop it on the page', true);
-        }, false);
-        dropContainer.addEventListener("dragover", function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            //set the drop mode
-            e.dataTransfer.dropEffect = 'copy';
-        }, false);
-        dropContainer.addEventListener("dragleave", function() {
-            document.getElementById('fileWrapper').style.opacity = 0.2;
-            that._updateInfo(that.info, false);
-        }, false);
-        dropContainer.addEventListener("drop", function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            document.getElementById('fileWrapper').style.opacity = 1;
-            that._updateInfo('Uploading', true);
-            //get the dropped file
-            that.file = e.dataTransfer.files[0];
-            if (that.status === 1) {
-                document.getElementById('fileWrapper').style.opacity = 1;
-                that.forceStop = true;
-            };
-            that.fileName = that.file.name;
-            //once the file is ready,start the visualizer
-            that._start();
-        }, false);
-    },
-    _start: function() {
-        //read and decode the file into audio array buffer 
-        var that = this,
-            file = this.file,
-            fr = new FileReader();
-        fr.onload = function(e) {
-            var fileResult = e.target.result;
-            var audioContext = that.audioContext;
-            if (audioContext === null) {
-                return;
-            };
-            that._updateInfo('Decoding the audio', true);
-            audioContext.decodeAudioData(fileResult, function(buffer) {
-                that._updateInfo('Decode succussfully,start the visualizer', true);
-                that._visualize(audioContext, buffer);
-            }, function(e) {
-                that._updateInfo('!Fail to decode the file', false);
-                console.log(e);
-            });
-        };
-        fr.onerror = function(e) {
-            that._updateInfo('!Fail to read the file', false);
-            console.log(e);
-        };
-        //assign the file to the reader
-        this._updateInfo('Starting read the file', true);
-        fr.readAsArrayBuffer(file);
     },
     _visualize: function(audioContext, buffer) {
         var audioBufferSouceNode = audioContext.createBufferSource(),
