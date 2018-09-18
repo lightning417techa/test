@@ -1,11 +1,26 @@
+<!DOCTYPE html>
 <html>
-   <head>
-     <link rel="stylesheet" type="text/css" href="style.css">
-   </head>
-   <body>
-     <audio src="https://iplock.weebly.com/uploads/9/5/7/3/95731436/wilson__expensive_mistakes_.mp3" id="audio" 
-     controls>HTML5 Audio element not supported</audio>
-     <canvas id="canvas" width="800" height="350"></canvas>
-     <script src="main.js"></script>
-   </body>
+    <head>
+        <meta name="description" content="HTML5 Audio Spectrum Visualizer">
+        <title>HTML5 Audio Spectrum Visualizer - Alexandre Juca</title>
+        <link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
+        <link type="text/css" rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div id="wrapper">
+            <div id="fileWrapper" class="file_wrapper">
+                <label for="uploadedFile">Drag & drop or select a file to play:</label>
+                <input type="file" id="uploadedFile"></input>
+            </div>
+            <div id="visualizer_wrapper">
+
+                 <canvas id='mono-L' width="1200" height="350"></canvas>
+                <canvas id='mono-R' width="1200" height="350"></canvas>
+            </div>
+
+        </div>
+        <footer>
+        </footer>
+        <script type="text/javascript" src="visualizer.js"></script>
+    </body>
 </html>
